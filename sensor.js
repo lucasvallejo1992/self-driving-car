@@ -7,10 +7,40 @@ class Sensor {
         this.raySpread = Math.PI / 2;
 
         this.rays = [];
+        this.readings = [];
     }
 
-    update() {
+    update(roadBorders) {
         this.#castRays();
+
+        this.readings = [];
+        this.rays.forEach(ray => {
+            const reading = this.#getReading(ray, roadBorders);
+            this.readings.push(reading);
+        });
+    }
+
+    #getReading(ray, roadBorders) {
+        const touches = [];
+
+        roadBorders.forEach(border => {
+            const [rayStart, rayEnd] = ray;
+            const [borderStart, borderEnd] = border;
+
+            const touch = getIntersection(rayStart, rayEnd, borderStart, borderEnd);
+
+            if (touch) {
+                touches.push(touch);
+            }
+        });
+
+        if (touches.length === 0) {
+            return null;
+        } else {
+            const offsets = touches.map(touch => touch.offset);
+            const minOffset = Math.min(...offsets);
+            return touches.find(touch => touch.offset === minOffset);
+        }
     }
 
     #castRays() {
@@ -32,11 +62,26 @@ class Sensor {
     }
 
     draw(ctx) {
-        this.rays.forEach(([start, end]) => {
+        this.rays.forEach(([start, end], i) => {
+            let rayEnding = end;
+
+            if (this.readings[i]) {
+                rayEnding = this.readings[i];
+            }
+
+            // Draw the ray
             ctx.beginPath();
             ctx.lineWidth = 2;
             ctx.strokeStyle = 'yellow';
             ctx.moveTo(start.x, start.y);
+            ctx.lineTo(rayEnding.x, rayEnding.y);
+            ctx.stroke();
+
+            // Draw the intersection point
+            ctx.beginPath();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'red';
+            ctx.moveTo(rayEnding.x, rayEnding.y);
             ctx.lineTo(end.x, end.y);
             ctx.stroke();
         });
