@@ -1,7 +1,6 @@
-const canvas = document.getElementById('myCanvas');
 
 canvas.width = 200;
-
+canvas.height = window.innerHeight;
 const ctx = canvas.getContext('2d');
 
 const road = new Road(canvas.width/2, canvas.width * 0.9);
