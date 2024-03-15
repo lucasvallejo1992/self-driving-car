@@ -19,9 +19,11 @@ class Car {
     }
 
     update(roadBorders) {
-        this.#move();
-        this.polygon = this.#createPolygon();
-        this.damaged = this.#checkDamage(roadBorders);
+        if (!this.damaged) {
+            this.#move();
+            this.polygon = this.#createPolygon();
+            this.damaged = this.#checkDamage(roadBorders);
+        }
         this.sensor.update(roadBorders);
     }
 
