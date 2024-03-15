@@ -46,3 +46,21 @@ function getIntersection(A, B, C, D) {
 
     return null;
 }
+
+function polygonIntersect(polygonA, polygonB) {
+    for (let i = 0; i < polygonA.length; i++) {
+        for (let j = 0; j < polygonB.length; j++) {
+            const intersection = getIntersection(
+                polygonA[i],
+                polygonA[(i + 1) % polygonA.length],
+                polygonB[0],
+                polygonB[(j + 1) % polygonB.length]
+            );
+            console.log(intersection);
+            if (intersection) {
+                return true;
+            }
+        }
+    }
+    return false;
+}

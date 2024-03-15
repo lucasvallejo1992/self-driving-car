@@ -12,6 +12,7 @@ class Car {
         this.friction = 0.05;
 
         this.polygon = [];
+        this.damaged = false;
 
         this.sensor = new Sensor(this);
         this.controlls = new Controlls();
@@ -20,6 +21,7 @@ class Car {
     update(roadBorders) {
         this.#move();
         this.polygon = this.#createPolygon();
+        this.damaged = this.#checkDamage(roadBorders);
         this.sensor.update(roadBorders);
     }
 
@@ -91,7 +93,20 @@ class Car {
         return points;
     }
 
+    #checkDamage(roadBorders) {
+        for (let i = 0; i < roadBorders.length; i++) {
+            if (polygonIntersect(this.polygon, roadBorders[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     draw(ctx) {
+        if (this.damaged) {
+            ctx.fillStyle = 'red';
+        }
+
         ctx.beginPath();
         this.polygon.forEach(({ x, y }, i) => {
             if (i === 0) {
