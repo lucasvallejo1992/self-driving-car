@@ -56,11 +56,10 @@ function polygonIntersect(polygonA, polygonB) {
                 polygonB[0],
                 polygonB[(j + 1) % polygonB.length]
             );
-            console.log(intersection);
             if (intersection) {
-                return true;
+                return intersection;
             }
         }
     }
-    return false;
+    return null;
 }

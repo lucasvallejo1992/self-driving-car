@@ -14,17 +14,21 @@ class Car {
         this.polygon = [];
         this.damaged = false;
 
-        this.sensor = new Sensor(this);
+        if (controlType !== 'dummy') {
+            this.sensor = new Sensor(this);
+        }
         this.controlls = new Controlls(controlType);
     }
 
-    update(roadBorders) {
+    update(roadBorders, trafic = []) {
         if (!this.damaged) {
             this.#move();
             this.polygon = this.#createPolygon();
-            this.damaged = this.#checkDamage(roadBorders);
+            this.damaged = this.#checkDamage(roadBorders, trafic);
         }
-        this.sensor.update(roadBorders);
+        if (this.sensor) {
+            this.sensor.update(roadBorders, trafic);
+        }
     }
 
     #move() {
@@ -95,9 +99,14 @@ class Car {
         return points;
     }
 
-    #checkDamage(roadBorders) {
+    #checkDamage(roadBorders, trafic) {
         for (let i = 0; i < roadBorders.length; i++) {
             if (polygonIntersect(this.polygon, roadBorders[i])) {
+                return true;
+            }
+        }
+        for (let i = 0; i < trafic.length; i++) {
+            if (polygonIntersect(this.polygon, trafic[i].polygon)) {
                 return true;
             }
         }
@@ -119,6 +128,8 @@ class Car {
         })
         ctx.fill();
 
-        this.sensor.draw(ctx);
+        if (this.sensor) {
+            this.sensor.draw(ctx);
+        }
     }
 }

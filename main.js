@@ -13,7 +13,7 @@ car.draw(ctx);
 animate();
 
 function animate() {
-    car.update(road.borders);
+    car.update(road.borders, trafic);
     trafic.forEach(traficCar => {
         traficCar.update(road.borders);
     });
