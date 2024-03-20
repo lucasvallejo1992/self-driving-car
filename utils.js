@@ -63,3 +63,11 @@ function polygonIntersect(polygonA, polygonB) {
     }
     return null;
 }
+
+function getRGBA (value) {
+    const alpha = Math.abs(value);
+    const red = value < 0 ? 0 : 255;
+    const green = red;
+    const blue = value > 0 ? 0 : 255;
+    return `rgba(${red}, ${green}, ${blue}, ${alpha})`
+}

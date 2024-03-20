@@ -1,14 +1,18 @@
 
-canvas.width = 200;
-canvas.height = window.innerHeight;
-const ctx = canvas.getContext('2d');
+const roadCanvas = document.getElementById('roadCanvas');
+roadCanvas.width = 200;
+const cartCtx = roadCanvas.getContext('2d');
 
-const road = new Road(canvas.width/2, canvas.width * 0.9);
-const car = new Car(road.getLaneCenter(1), 100, 30, 50, 'AI');
+const networkCanvas = document.getElementById('networkCanvas');
+networkCanvas.width = 800;
+const networkCtx = networkCanvas.getContext('2d');
+
+const road = new Road(roadCanvas.width/2, roadCanvas.width * 0.9);
+const car = new Car(road.getLaneCenter(1), 100, 30, 50, 'keyboard');
 const trafic = [
     new Car(road.getLaneCenter(1), -100, 30, 50, 'dummy', 2),
 ]
-car.draw(ctx);
+car.draw(cartCtx);
 
 animate();
 
@@ -17,17 +21,22 @@ function animate() {
     trafic.forEach(traficCar => {
         traficCar.update(road.borders);
     });
-    canvas.height = window.innerHeight;
-    
-    ctx.save();
-    ctx.translate(0, -car.y + canvas.height * 0.8);
 
-    road.draw(ctx);
-    car.draw(ctx);
+    roadCanvas.height = window.innerHeight;
+    networkCanvas.height = window.innerHeight;
+    
+    cartCtx.save();
+    cartCtx.translate(0, -car.y + roadCanvas.height * 0.8);
+
+    road.draw(cartCtx);
+    car.draw(cartCtx);
     trafic.forEach(traficCar => {
-        traficCar.draw(ctx);
+        traficCar.draw(cartCtx);
     });
 
-    ctx.restore();
+    cartCtx.restore();
+
+    Visualizer.drawNetwork(networkCtx, car.brain);
+
     requestAnimationFrame(animate);
 }
